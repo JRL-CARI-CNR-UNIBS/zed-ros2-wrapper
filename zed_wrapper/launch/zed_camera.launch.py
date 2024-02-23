@@ -20,9 +20,10 @@ from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     OpaqueFunction,
-    SetEnvironmentVariable
+    SetEnvironmentVariable,
+    LogWarn
 )
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import (
     LaunchConfiguration,
     Command,
@@ -51,6 +52,13 @@ def parse_array_param(param):
     arr = str.split(',')
 
     return arr
+
+
+def throw_overwrite_warning(param, value):
+    return [
+        LogWarn(
+            msg=f"Overwriting parameter '{param}' specified in the 'common.yaml' file with the value '{value}'."),
+    ]
 
 
 def launch_setup(context, *args, **kwargs):
@@ -229,6 +237,19 @@ def generate_launch_description():
                 'sim_port',
                 default_value='30000',
                 description='The connection port of the simulation server. See the documentation of the supported simulation plugins for more information.'),
-            OpaqueFunction(function=launch_setup)
-        ]
+            OpaqueFunction(function=launch_setup),
+            LogWarn(
+                msg="========================================================================================================================"),
+            LogWarn(
+                msg="The following parameters set in the 'common.yaml' file will be OVERWRITTEN with the values specified in the launch file:"),
+            LogWarn(
+                msg="Simulation: 'use_sim_time', 'simulation.sim_enabled', 'simulation.sim_address', 'simulation.sim_port'"),
+            LogWarn(
+                msg="General: 'general.camera_name', 'general.camera_model', 'general.svo_file', 'general.serial_number'"),
+            LogWarn(
+                msg="Positional Tracking: 'pos_tracking.publish_tf', 'pos_tracking.publish_map_tf', 'sensors.publish_imu_tf'"),
+            LogWarn(
+                msg="========================================================================================================================"),
+            
+        ]        
     )
