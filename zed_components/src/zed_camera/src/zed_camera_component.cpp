@@ -18,6 +18,7 @@
 #include <limits>
 #include <sys/resource.h>
 #include <stdexcept>
+#include <math>
 
 #include "zed_camera_component.hpp"
 #include "sl_logging.hpp"
@@ -7426,27 +7427,64 @@ void ZedCamera::processBodies(rclcpp::Time t)
 
     bodyMsg->objects[idx].skeleton_available = true;
 
+    // Body Keypoints
     uint8_t kp_size = body.keypoint_2d.size();
     DEBUG_STREAM_BT(" * Skeleton KP: " << static_cast<int>(kp_size));
     if (kp_size <= 70) {
+      // 2D Keypoints
       memcpy(
         &(bodyMsg->objects[idx].skeleton_2d.keypoints[0]), &(body.keypoint_2d[0]),
         2 * kp_size * sizeof(float));
 
+      // 3D Keypoints
       memcpy(
         &(bodyMsg->objects[idx].skeleton_3d.keypoints[0]), &(body.keypoint[0]),
         3 * kp_size * sizeof(float));
-    }
 
+      // Detection confidence
+      memcpy(
+        &(bodyMsg->objects[idx].skeleton_confidence.keypoint_confidence[0]),
+        &(body.keypoint_confidence[0]), kp_size * sizeof(float));
+
+      // Keypoint covariances
+      memcpy(
+        &(bodyMsg->objects[idx].skeleton_3d.keypoint_covariance[0]),
+        &(body.keypoint_covariance[0]), 6 * kp_size * sizeof(float));
+
+      // Not available with sl::BODY_FORMAT::BODY_18
+      if (mBodyTrkFmt == sl::BODY_FORMAT::BODY_18) {
+        RCLCPP_WARN_STREAM(
+          get_logger(),
+          "Global root orientation, local position and orientation per joint NOT SUPPORTED for " << mBodyTrkFmt.c_str() << "body format.");
+
+        std::fill_n(bodyMsg->objects[idx].skeleton_3d.local_position_per_joint[0], 3 * kp_size, NAN);
+        std::fill_n(bodyMsg->objects[idx].skeleton_3d.local_orientation_per_joint[0], 4 * kp_size, NAN);
+        std::fill_n(bodyMsg->objects[idx].skeleton_3d.global_root_orientation, 4, NAN);
+
+      } else {
+        // Local position per joint
+        memcpy(
+          &(bodyMsg->objects[idx].skeleton_3d.local_position_per_joint[0]),
+          &(body.local_position_per_joint[0]), 3 * kp_size * sizeof(float));
+
+        // Local orientation per joint
+        memcpy(
+          &(bodyMsg->objects[idx].skeleton_3d.local_orientation_per_joint[0]),
+          &(body.local_orientation_per_joint[0]), 4 * kp_size * sizeof(float));
+
+        // Global root position
+        // note that global root translation is available in body.keypoint[root_index]
+        // where root_index is the root index of the body model
+
+        // Global root orientation
+        memcpy(
+          &(bodyMsg->objects[idx].skeleton_3d.global_root_orientation[0]),
+          &(body.global_root_orientation[0]), 4 * sizeof(float));
+      }
+    }
 
     // ----------------------------------
     // at the end of the loop
-
-    // TODO(Walter) Add support for
-    //body.global_root_orientation;
-    //body.local_orientation_per_joint;
-    //body.local_orientation_per_joint;
-
     idx++;
   }
 

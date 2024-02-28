@@ -145,8 +145,8 @@
         
         body_tracking:
             bt_enabled: true # True to enable Body Tracking
-            model: 'HUMAN_BODY_ACCURATE' # 'HUMAN_BODY_FAST', 'HUMAN_BODY_MEDIUM', 'HUMAN_BODY_ACCURATE'
-            body_format: 'BODY_38' # 'BODY_18','BODY_34','BODY_38','BODY_70'
+            model: 'HUMAN_BODY_FAST' # 'HUMAN_BODY_FAST', 'HUMAN_BODY_MEDIUM', 'HUMAN_BODY_ACCURATE'
+            body_format: 'BODY_38' # 'BODY_18','BODY_34','BODY_38'
             allow_reduced_precision_inference: true # Allow inference to run at a lower precision to improve runtime and memory usage
             max_range: 5.0 # [m] Defines a upper depth range for detections
             body_kp_selection: 'FULL' # 'FULL', 'UPPER_BODY'
@@ -180,5 +180,5 @@
             debug_mapping : false
             debug_terrain_mapping : false
             debug_object_detection : false
-            debug_body_tracking : false
+            debug_body_tracking : true
             debug_advanced: false
