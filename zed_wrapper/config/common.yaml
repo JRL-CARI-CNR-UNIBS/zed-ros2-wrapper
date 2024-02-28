@@ -145,7 +145,7 @@
         
         body_tracking:
             bt_enabled: true # True to enable Body Tracking
-            model: 'HUMAN_BODY_FAST' # 'HUMAN_BODY_FAST', 'HUMAN_BODY_MEDIUM', 'HUMAN_BODY_ACCURATE'
+            model: 'HUMAN_BODY_ACCURATE' # 'HUMAN_BODY_FAST', 'HUMAN_BODY_MEDIUM', 'HUMAN_BODY_ACCURATE'
             body_format: 'BODY_38' # 'BODY_18','BODY_34','BODY_38'
             allow_reduced_precision_inference: true # Allow inference to run at a lower precision to improve runtime and memory usage
             max_range: 5.0 # [m] Defines a upper depth range for detections
