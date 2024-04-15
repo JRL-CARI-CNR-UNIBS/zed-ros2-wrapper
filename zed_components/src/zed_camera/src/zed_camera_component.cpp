@@ -18,7 +18,7 @@
 #include <limits>
 #include <sys/resource.h>
 #include <stdexcept>
-#include <math>
+#include <cmath>
 
 #include "zed_camera_component.hpp"
 #include "sl_logging.hpp"
