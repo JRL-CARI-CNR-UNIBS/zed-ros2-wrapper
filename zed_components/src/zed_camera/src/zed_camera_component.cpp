@@ -18,7 +18,7 @@
 #include <limits>
 #include <sys/resource.h>
 #include <stdexcept>
-#include <math>
+#include <cmath>
 
 #include "zed_camera_component.hpp"
 #include "sl_logging.hpp"
@@ -7443,23 +7443,23 @@ void ZedCamera::processBodies(rclcpp::Time t)
 
       // Detection confidence
       memcpy(
-        &(bodyMsg->objects[idx].skeleton_confidence.keypoint_confidence[0]),
+        &(bodyMsg->objects[idx].skeleton_3d.keypoint_confidences[0]),
         &(body.keypoint_confidence[0]), kp_size * sizeof(float));
 
       // Keypoint covariances
       memcpy(
-        &(bodyMsg->objects[idx].skeleton_3d.keypoint_covariance[0]),
-        &(body.keypoint_covariance[0]), 6 * kp_size * sizeof(float));
+        &(bodyMsg->objects[idx].skeleton_3d.keypoint_covariances[0]),
+        &(body.keypoint_covariances[0]), 6 * kp_size * sizeof(float));
 
       // Not available with sl::BODY_FORMAT::BODY_18
       if (mBodyTrkFmt == sl::BODY_FORMAT::BODY_18) {
         RCLCPP_WARN_STREAM(
           get_logger(),
-          "Global root orientation, local position and orientation per joint NOT SUPPORTED for " << mBodyTrkFmt.c_str() << "body format.");
+          "Global root orientation, local position and orientation per joint NOT SUPPORTED for " << mBodyTrkFmt << "body format.");
 
-        std::fill_n(bodyMsg->objects[idx].skeleton_3d.local_position_per_joint[0], 3 * kp_size, NAN);
-        std::fill_n(bodyMsg->objects[idx].skeleton_3d.local_orientation_per_joint[0], 4 * kp_size, NAN);
-        std::fill_n(bodyMsg->objects[idx].skeleton_3d.global_root_orientation, 4, NAN);
+//        std::fill_n(bodyMsg->objects[idx].skeleton_3d.local_position_per_joint.begin()gui, 3 * kp_size, NAN);
+//        std::fill_n(bodyMsg->objects[idx].skeleton_3d.local_orientation_per_joint.begin(), 4 * kp_size, NAN);
+//        std::fill_n(bodyMsg->objects[idx].skeleton_3d.global_root_orientation.begin(), 4, NAN);
 
       } else {
         // Local position per joint

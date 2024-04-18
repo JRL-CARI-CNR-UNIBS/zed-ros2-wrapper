@@ -21,7 +21,7 @@ from launch.actions import (
     DeclareLaunchArgument,
     OpaqueFunction,
     SetEnvironmentVariable,
-    LogWarn
+    LogInfo
 )
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import (
@@ -56,7 +56,7 @@ def parse_array_param(param):
 
 def throw_overwrite_warning(param, value):
     return [
-        LogWarn(
+        LogInfo(
             msg=f"Overwriting parameter '{param}' specified in the 'common.yaml' file with the value '{value}'."),
     ]
 
@@ -238,17 +238,17 @@ def generate_launch_description():
                 default_value='30000',
                 description='The connection port of the simulation server. See the documentation of the supported simulation plugins for more information.'),
             OpaqueFunction(function=launch_setup),
-            LogWarn(
+            LogInfo(
                 msg="========================================================================================================================"),
-            LogWarn(
+            LogInfo(
                 msg="The following parameters set in the 'common.yaml' file will be OVERWRITTEN with the values specified in the launch file:"),
-            LogWarn(
+            LogInfo(
                 msg="Simulation: 'use_sim_time', 'simulation.sim_enabled', 'simulation.sim_address', 'simulation.sim_port'"),
-            LogWarn(
+            LogInfo(
                 msg="General: 'general.camera_name', 'general.camera_model', 'general.svo_file', 'general.serial_number'"),
-            LogWarn(
+            LogInfo(
                 msg="Positional Tracking: 'pos_tracking.publish_tf', 'pos_tracking.publish_map_tf', 'sensors.publish_imu_tf'"),
-            LogWarn(
+            LogInfo(
                 msg="========================================================================================================================"),
             
         ]        
