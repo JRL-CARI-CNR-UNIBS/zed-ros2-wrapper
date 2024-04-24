@@ -7441,16 +7441,21 @@ void ZedCamera::processBodies(rclcpp::Time t)
         &(bodyMsg->objects[idx].skeleton_3d.keypoints[0]), &(body.keypoint[0]),
         3 * kp_size * sizeof(float));
 
+/*
       // Detection confidence
       memcpy(
         &(bodyMsg->objects[idx].skeleton_confidence.keypoint_confidence[0]),
         &(body.keypoint_confidence[0]), kp_size * sizeof(float));
+*/
 
+/*
       // Keypoint covariances
       memcpy(
         &(bodyMsg->objects[idx].skeleton_3d.keypoint_covariance[0]),
         &(body.keypoint_covariance[0]), 6 * kp_size * sizeof(float));
+*/
 
+/*
       // Not available with sl::BODY_FORMAT::BODY_18
       if (mBodyTrkFmt == sl::BODY_FORMAT::BODY_18) {
         RCLCPP_WARN_STREAM(
@@ -7481,6 +7486,7 @@ void ZedCamera::processBodies(rclcpp::Time t)
           &(bodyMsg->objects[idx].skeleton_3d.global_root_orientation[0]),
           &(body.global_root_orientation[0]), 4 * sizeof(float));
       }
+*/
     }
 
     // ----------------------------------
